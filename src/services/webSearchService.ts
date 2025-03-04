@@ -4,9 +4,12 @@ import {
     ServiceType,
 } from "@elizaos/core";
 import { tavily } from "@tavily/core";
-import type { IWebSearchService, SearchOptions, SearchResponse } from "../types";
-
-export type TavilyClient = ReturnType<typeof tavily>; // declaring manually because original package does not export its types
+import type { 
+    IWebSearchService, 
+    SearchOptions, 
+    SearchResponse,
+    TavilyClient
+} from "../types";
 
 export class WebSearchService extends Service implements IWebSearchService {
     public tavilyClient: TavilyClient
@@ -32,18 +35,27 @@ export class WebSearchService extends Service implements IWebSearchService {
         options?: SearchOptions,
     ): Promise<SearchResponse> {
         try {
-            const response = await this.tavilyClient.search(query, {
-                includeAnswer: options?.includeAnswer || true,
-                maxResults: options?.limit || 3,
+            let maxResults = 1;
+            
+            if (options && options.limit !== undefined) {
+                maxResults = typeof options.limit === 'string' 
+                    ? parseInt(options.limit, 10) 
+                    : options.limit;
+            }
+            
+            const tavilyOptions = {
+                includeAnswer: options?.includeAnswer ?? true,
+                maxResults: maxResults,
                 topic: options?.type || "general",
                 searchDepth: options?.searchDepth || "basic",
                 includeImages: options?.includeImages || false,
                 days: options?.days || 3,
-            });
-
+            };
+            
+            const response = await this.tavilyClient.search(query, tavilyOptions);
+            
             return response;
         } catch (error) {
-            console.error("Web search error:", error);
             throw error;
         }
     }
