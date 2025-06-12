@@ -40,10 +40,10 @@ export default {
 ```
 
 **Custom Usage**
-If you want custom usage, for example, twitter-client to search the web before posting a tweet, you can also import the webSearchService and use it directly. Here's how you can do it:
+If you want custom usage, for example, a social media client to search the web before posting, you can also import the webSearchService and use it directly. Here's how you can do it:
 
 ```typescript
-// packages/client-twitter/src/post.ts
+// Example usage in a social media client
 const webSearchService = new WebSearchService();
 await webSearchService.initialize(runtime);
 const latestNews = await webSearchService.search(
@@ -58,7 +58,7 @@ const state = await this.runtime.composeState(
     }
 );
 
-// Then modify the tweet template to include the {{latestNews}} and however you need
+// Then modify the post template to include the {{latestNews}} and however you need
 ```
 
 ## Features
